@@ -1,63 +1,42 @@
-# Шаблон репозитория, для успешной сдачи лабораторных работ.
+# Задания 9 и 10 коллоквиума
 
-## Введение
-Данный шаблон является примером оформления кода для сдачи лабораторных работ.
-Рекомендуется  строго его придерживаться во избежания проблем при сдаче и понижения баллов
-
-
-## Структура проекта
+## Задание 10
 
  <pre>
-    .
-    ├── lab<# лабораторной работы>             # Кодовая база вашей лабораторной работы
-    │   ├── src/                               # Исходный код
-    │   ├── tests/                             # Unit тесты
-    │   ├── uv.lock                            # зависимости вашего проекта
-    │   ├── report.pdf                         # Отчет
-    │   ├── .gitignore                         # git ignore файл
-    │   ├──.pre-commit-config.yaml             # Средства автоматизации проверки кодстайла
-    │   ├── README.md                          # Описание вашего проекта, с описанием файлов и с титульником о том,
-                                               # что и какая задача
+class User:
+  users = {}
+  def __init__(self, name, age=0, tags=None):
+    self.name = name
+    self.age = age
+    self.tags = tags if tags is not None else []
+
+  def add_tag(self, tag):
+    self.tags.append(tag)
+
+  @classmethod
+  def create(cls, name, age):
+    if name in cls.users:
+      raise ValueError("User already exists")
+    user = cls(name, age)
+    cls.users[name] = user
+    return user
+
+  @classmethod
+  def get(cls, name):
+    return cls.users[name]
+
+  def __str__(self):
+    return f"User: {self.name} ({str(self.age)})"
+
+u1 = User.create("Alex", 20)
+u1.add_tag("admin")
+print(User.get("Alex"))
+print(u1)
+
+try:
+    u2 = User.create("Alex", 30)
+    print(User.get("Alex"))
+    print(u2)
+except ValueError as e:
+    print(f"Error: {e}")
 </pre>
-
-В папке [src](./src) лежат файлы с реализацией задачи заданной в лабораторной работе. Обязательным файлом является файл
-[main.py](./src/main.py) в котором описана точка входа в приложение - функция **main**. Требования к коду:
-- Переменные, функции и модули именуются по [**snake_case**](https://realpython.com/ref/glossary/snake-case/)
-- Константы должны быть вынесены в файл **constants.py** и именовановаться с помощию символов в верхнем регистре
-- Классы должны именоваться в [**PascalCase**](https://habr.com/ru/articles/724556/)
-- Имена сущностей должны быть осмысленные и содержательные
-- Все отступы должны быть консистентны: 1 TAB = 4 spaces
-- Весь функционал должен быть описан в функциях и в классах. Не допускается писать весь в глобальном скоупе или в одной функции
-- К каждой функции должны быть описаны  [**docstring**](https://peps.python.org/pep-0257/) и аннотации к аргументам и выходным параметрам функций.
-
-В качестве референса проще cходу соблюдать [**PEP8**](https://peps.python.org/pep-0008/) и использовать IDE c готовой поддержкой:
-например PyCharm или VSCode c настроенными плагинами.
-В ходе попыток запушить код в репозиторий ваш код будет проходить проверку статическим анализатором [**mypy**](https://mypy-lang.org/)
-а также с встроенным в [**ruff**](https://astral.sh/ruff) на предмет нарушения код стайла. При работе с кодовой базой
-всю работу необходимо выполнять в [виртуальном окружении](https://docs.python.org/3/tutorial/venv.html)
-
-
-В папке [tests](./tests) лежат [unit тесты](https://tproger.ru/articles/testiruem-na-python-unittest-i-pytest-instrukcija-dlja-nachinajushhih) для проверки функциональности программы или ее частей.
-Рекомендуется использовать pytest. Также название тестов должно быть осмысленно и содержать определение проверямой части.
-Базовые соглашения pytest можно посмотреть [здесь](https://www.qabash.com/pytest-default-naming-conventions-guide/).
-Рекомендуется проверять не только успешные кейсы, но и краевые условия и кейсы в которых была допущена ошибка (неудачные кейсы).
-
-В качестве пакетного менджера в данном шаблоне/репозитории используется [uv](https://github.com/astral-sh/uv).
-Можно использовать и [стандартные виртальные окружения](https://docs.python.org/3/library/venv.html). В таком случае необходимо добавить в репозиторий `requirements.txt`.
-Это достигается командой
-```shell
-pip freeze > requirements.txt
-```
-Также разрешается использовать [`poetry`](https://python-poetry.org/)
-## Как работать с репозиторием и шаблонами
-1. Необходимо создать репозиторий из этого шаблона. Посмотреть можно [здесь](https://docs.github.com/ru/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-2. Склонировать или спуллить его к себе на машину командами `git pull` или `git clone`
-3. Создать виртуальное окружение:
-
-    a. Для uv прописать команду `uv venv`. Затем прописать `.venv/bin/activate` в терминале
-
-    b. Для обычного python `python -m venv <имя директории где будет храниться папка .venv>`. Затем прописать `.venv/bin/activate` в терминале
-4. Установить [`pre-commit`](https://pre-commit.com/). Для этого достаточно ввести команду `pip install pre-commit`
-5. Выполнить команду `pre-commit install`
-6. При запушивании в репозиторий необходимо правильно составлять сообщения коммита. Правила можно прочитать [здесь](https://github.com/RomuloOliveira/commit-messages-guide/blob/master/README_ru-RU.md)
-7. **Внимательно** читайте то, что пишется при попытке коммита, если исправили ошибки нужно заново добавить отредактированные файлы в гит и попробовать коммитнуть
